@@ -1,53 +1,83 @@
-// import the data from data.js
+// from data.js
 const tableData = data;
 
-// Reference the HTML table using D3
+// get table references
 var tbody = d3.select("tbody");
 
-// Create function to build data based off data input
 function buildTable(data) {
-    // clear existing data (if any)
-    tbody.html("");
+  // First, clear out any existing data
+  tbody.html("");
 
-    // loop through each object in the data
-    // and append a row and cells for each value in the row
-    data.forEach((dataRow) => {
-        // adds HTML tag to create row in table
-        let row = tbody.append("tr");
+  // Next, loop through each object in the data
+  // and append a row and cells for each value in the row
+  data.forEach((dataRow) => {
+    // Append a row to the table body
+    let row = tbody.append("tr");
 
-        // reference one obj from array of UFO sightings
-        // forEach((val) specifies we want one object per row
-        Object.values(dataRow).forEach((val) => {
-            // create var to append data to table
-            let cell = row.append("td");
-            // added value from object into the cell
-            cell.text(val);
-            }
-        );
+    // Loop through each field in the dataRow and add
+    // each value as a table cell (td)
+    Object.values(dataRow).forEach((val) => {
+      let cell = row.append("td");
+      cell.text(val);
     });
+  });
 }
 
-// function to process clicks when filtering data
-function handleClick() {
+// 1. Create a variable to keep track of all the filters as an object.
+var filter = {};
 
-    // chain .property to d3.select to look for date values and store data to var
-    let date = d3.select("#datetime").property("value");
-    // set default filter variable
-    let filteredData = tableData;
+// 3. Use this function to update the filters. 
+function updateFilters() {
 
-    // filter for date ( === means strict equality, compared to == meaning loose equality)
-    if (date) {
-        filteredData = filteredData.filter(row => row.datetime === date);
+  // 4a. Save the element that was changed as a variable.
+  let changedElement = d3.select(this);
+  // 4b. Save the value that was changed as a variable.
+  let elementValue = changedElement.property("value");
+  console.log(elementValue);
+  // 4c. Save the id of the filter that was changed as a variable.
+  let filterId = changedElement.attr("id");
+  console.log(filterId);
+  
+  // 5. If a filter value was entered then add that filterId and value
+  // to the filters list. Otherwise, clear that filter from the filters object.
+  if (elementValue) {
+    filter[filterId] = elementValue;
+  }
+  else {
+    delete filter[filterId];
+  }
+  
+  // 6. Call function to apply all filters and rebuild the table
+  filterTable();
+  
+}
+  
+// 7. Use this function to filter the table when data is entered.
+function filterTable() {
+  
+  // 8. Set the filtered data to the tableData.
+  let filteredData = tableData;
+  
+  // 9. Loop through all of the filters and keep any data that
+  // matches the filter values
+  filteredData = filteredData.filter(function(item) {
+    for (var fil in filter) {
+      if (item[fil] != filter[fil])
+        return false;
     }
+    return true;
+  });
 
-    // rebuild table using filtered data
-    // @NOTE if no date was entered, then filteredData will
-    // be original tableData
-    buildTable(filteredData);
+  // checked to see if data filtered properly
+  // console.log(filteredData);
+
+
+  // 10. Finally, rebuild the table using the filtered data
+  buildTable(filteredData);
 }
-
-// select filter button on click, executing the function
-d3.selectAll("#filter-btn").on("click", handleClick);
-
+  
+// 2. Attach an event to listen for changes to each filter
+d3.selectAll("input").on("change", updateFilters);
+  
 // Build the table when the page loads
 buildTable(tableData);
