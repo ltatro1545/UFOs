@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #  UFO Sightings
+=======
+# UFO Sightings
+>>>>>>> 29a76b3b2c4af0c4fcf7c68e006e6dfab3b3dcde
 ## Overview
 The purpose of this project was to create a responsive HTML page that houses UFO sighting data and allows the reader to filter the data based on a few parameters. A JavaScript app was written to build the table that holds the data on the webpage. Each individual row of data did not need to be written into the HTML code because the JS app used a forEach loop that created a new table row for each object in the array of data. Additionally, the JS app has a function to update the table filters whenever the user clicks anywhere on the page - a "filter search" button does not otherwise exist. A CSS file was used to enhance the visuals on the page by changing the color of the body text and adding a NASA image to the jumbotron.
 
